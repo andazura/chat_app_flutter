@@ -1,5 +1,8 @@
+import 'package:chat_app/helpers/alertas.dart';
+import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
    
@@ -43,6 +46,7 @@ class _FormStateState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: true);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -64,7 +68,9 @@ class _FormStateState extends State<_Form> {
           
           //todo crear boton
           BotonAzul(
-            onPress: boton,
+            onPress: authService.autenticando
+            ? null
+            : boton,
             textButton: "Ingresar"
           )
         ],
@@ -72,7 +78,14 @@ class _FormStateState extends State<_Form> {
     );
   }
 
-  void boton(){
-    print("este en la func");
+  void boton() async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    FocusScope.of(context).unfocus();
+    final loginOk = await authService.login(emailCtrl.text.trim(), passwCtrl.text.trim());
+    if( loginOk ){
+      Navigator.pushReplacementNamed(context, 'usuarios');
+    }else{
+      mosrtarAlerta(context, "Credenciales invalidas", "Intenta de nuevo");
+    }
   }
 }

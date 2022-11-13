@@ -154,4 +154,3 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin{
     super.dispose();
   }
 }
-
