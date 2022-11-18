@@ -1,3 +1,4 @@
+import 'package:chat_app/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -92,10 +93,12 @@ class _FormStateState extends State<_Form> {
 
   void boton() async {
     final authService = Provider.of<AuthService>(context,listen: false);
+    final socketService = Provider.of<SocketService>(context, listen: false);
     FocusScope.of(context).unfocus();
     final registerOk = await authService.register(nameCtrl.text.trim(),emailCtrl.text.trim(),passwCtrl.text.trim());
     if( registerOk == true ){
       Navigator.popAndPushNamed(context, 'usuarios');
+      socketService.connect();
     }else{
       mosrtarAlerta(context,  "Registro incorrecto" , registerOk,);
     }

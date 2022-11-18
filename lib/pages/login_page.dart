@@ -1,5 +1,6 @@
 import 'package:chat_app/helpers/alertas.dart';
 import 'package:chat_app/services/auth_service.dart';
+import 'package:chat_app/services/socket_service.dart';
 import 'package:chat_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,10 +81,12 @@ class _FormStateState extends State<_Form> {
 
   void boton() async {
     final authService = Provider.of<AuthService>(context, listen: false);
+    final socketService = Provider.of<SocketService>(context, listen: false);
     FocusScope.of(context).unfocus();
     final loginOk = await authService.login(emailCtrl.text.trim(), passwCtrl.text.trim());
     if( loginOk ){
       Navigator.pushReplacementNamed(context, 'usuarios');
+      socketService.connect();
     }else{
       mosrtarAlerta(context, "Credenciales invalidas", "Intenta de nuevo");
     }
